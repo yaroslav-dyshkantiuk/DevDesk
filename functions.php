@@ -91,9 +91,7 @@ function devdesk_register_post_type(){
 		'publicly_queryable' => true,
 		'show_ui' => true,
 		'has_archive' => true,
-		'hierarchical' => true,
 		'rewrite' => array('slug' => 'cars'),
-		'query_var' => 'mycar',
 		'show_in_rest' => true,
 	);
 	register_post_type('car', $args);
