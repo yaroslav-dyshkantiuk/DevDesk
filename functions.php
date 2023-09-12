@@ -99,6 +99,11 @@ function devdesk_register_post_type(){
 	unset($args);
 	unset($labels);
 
+}
+add_action('init', 'devdesk_register_post_type');
+
+function devdesk_register_taxonomy(){
+
 	$labels = array(
 	'name'              => esc_html_x( 'Brands', 'taxonomy general name', 'devdesk' ),
 	'singular_name'     => esc_html_x( 'Brand', 'taxonomy singular name', 'devdesk' ),
@@ -153,7 +158,13 @@ function devdesk_register_post_type(){
 
 	register_taxonomy('manufacture', array('car'), $args);
 }
-add_action('init', 'devdesk_register_post_type');
+add_action('init', 'devdesk_register_taxonomy');
+
+function custom_taxonomy_flush_rewrite() {
+	global $wp_rewrite;
+    $wp_rewrite->flush_rules();
+}
+add_action('init', 'custom_taxonomy_flush_rewrite');
 
 function devdesk_rewrite_rules(){
 	devdesk_register_post_type();
