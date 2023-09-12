@@ -7,7 +7,36 @@
  * @package DevDesk
  */
 
+require get_template_directory() . '/inc/widget-about.php';
 
+function devdesk_widgets_init() {
+	register_sidebar(
+		array(
+			'name'          => esc_html__( 'Sidebar', 'devdesk' ),
+			'id'            => 'sidebar-1',
+			'description'   => esc_html__( 'Add widgets here.', 'devdesk' ),
+			'before_widget' => '<section id="%1$s" class="widget %2$s">',
+			'after_widget'  => '</section>',
+			'before_title'  => '<h2 class="widget-title">',
+			'after_title'   => '</h2>',
+		)
+	);
+
+	register_sidebar(
+		array(
+			'name'          => esc_html__( 'Car Pages Sidebar', 'devdesk' ),
+			'id'            => 'car-sidebar',
+			'description'   => esc_html__( 'Appears as a Sidebar on Car Pages.', 'devdesk' ),
+			'before_widget' => '<section id="%1$s" class="widget %2$s">',
+			'after_widget'  => '</section>',
+			'before_title'  => '<h2 class="widget-title">',
+			'after_title'   => '</h2>',
+		)
+	);
+
+	register_widget( 'devdesk_about_widget' );
+}
+add_action( 'widgets_init', 'devdesk_widgets_init' );
 
 
  function devdesk_enqueue_scripts() {
@@ -263,20 +292,7 @@ add_action( 'after_setup_theme', 'devdesk_content_width', 0 );
  *
  * @link https://developer.wordpress.org/themes/functionality/sidebars/#registering-a-sidebar
  */
-function devdesk_widgets_init() {
-	register_sidebar(
-		array(
-			'name'          => esc_html__( 'Sidebar', 'devdesk' ),
-			'id'            => 'sidebar-1',
-			'description'   => esc_html__( 'Add widgets here.', 'devdesk' ),
-			'before_widget' => '<section id="%1$s" class="widget %2$s">',
-			'after_widget'  => '</section>',
-			'before_title'  => '<h2 class="widget-title">',
-			'after_title'   => '</h2>',
-		)
-	);
-}
-add_action( 'widgets_init', 'devdesk_widgets_init' );
+
 
 
 /**

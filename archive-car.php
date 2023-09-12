@@ -31,5 +31,9 @@ get_header();
 	</div>
 
 <?php
-// get_sidebar();
+if(is_active_sidebar('car-sidebar')) {
+echo '<aside id="secondary" class="widget-area">';
+get_sidebar('cars');
+echo '</aside>';
+}
 get_footer();
