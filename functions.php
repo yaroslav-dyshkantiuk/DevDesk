@@ -95,6 +95,63 @@ function devdesk_register_post_type(){
 		'show_in_rest' => true,
 	);
 	register_post_type('car', $args);
+
+	unset($args);
+	unset($labels);
+
+	$labels = array(
+	'name'              => esc_html_x( 'Brands', 'taxonomy general name', 'devdesk' ),
+	'singular_name'     => esc_html_x( 'Brand', 'taxonomy singular name', 'devdesk' ),
+	'search_items'      => esc_html__( 'Search Brands', 'devdesk' ),
+	'all_items'         => esc_html__( 'All Brands', 'devdesk' ),
+	'parent_item'       => esc_html__( 'Parent Brand', 'devdesk' ),
+	'parent_item_colon' => esc_html__( 'Parent Brand:', 'devdesk' ),
+	'edit_item'         => esc_html__( 'Edit Brand', 'devdesk' ),
+	'update_item'       => esc_html__( 'Update Brand', 'devdesk' ),
+	'add_new_item'      => esc_html__( 'Add New Brand', 'devdesk' ),
+	'new_item_name'     => esc_html__( 'New Brand Name', 'devdesk' ),
+	'menu_name'         => esc_html__( 'Brand', 'devdesk' ),
+	);
+
+	$args = array(
+		'hierarchical' => false,
+		'labels' => $labels,
+		'show_ui' => true,
+		'rewrite' => array('slug' => 'brands'),
+		'query_war' => true,
+		'show_in_rest' => true,
+	);
+
+	register_taxonomy('brand', array('car'), $args);
+
+	unset($args);
+	unset($labels);
+
+	$labels = array(
+	'name'              => esc_html_x( 'Manufactures', 'taxonomy general name', 'devdesk' ),
+	'singular_name'     => esc_html_x( 'Manufacture', 'taxonomy singular name', 'devdesk' ),
+	'search_items'      => esc_html__( 'Search Manufactures', 'devdesk' ),
+	'all_items'         => esc_html__( 'All Manufactures', 'devdesk' ),
+	'parent_item'       => esc_html__( 'Parent Manufacture', 'devdesk' ),
+	'parent_item_colon' => esc_html__( 'Parent Manufacture:', 'devdesk' ),
+	'edit_item'         => esc_html__( 'Edit Manufacture', 'devdesk' ),
+	'update_item'       => esc_html__( 'Update Manufacture', 'devdesk' ),
+	'add_new_item'      => esc_html__( 'Add New Manufacture', 'devdesk' ),
+	'new_item_name'     => esc_html__( 'New Manufacture Name', 'devdesk' ),
+	'menu_name'         => esc_html__( 'Manufacture', 'devdesk' ),
+	);
+
+	$args = array(
+		'hierarchical' => true,
+		'labels' => $labels,
+		'show_ui' => true,
+		'rewrite' => array('slug' => 'manufactures'),
+		'query_war' => true,
+		'show_admin_column' => 'true',
+		'show_in_rest' => true,
+	);
+
+	register_taxonomy('manufacture', array('car'), $args);
 }
 add_action('init', 'devdesk_register_post_type');
 
