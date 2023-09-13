@@ -18,6 +18,9 @@ get_header();
 
 			get_template_part( 'partials/content', get_post_type() );
 
+			// previous_post_link();
+			// next_post_link();
+
 			the_post_navigation(
 				array(
 					'prev_text' => '<span class="nav-subtitle">' . esc_html__( 'Previous:', 'devdesk' ) . '</span> <span class="nav-title">%title</span>',

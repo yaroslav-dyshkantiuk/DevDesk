@@ -20,11 +20,21 @@ get_header();
 				?>
 		</header>
 
-		<?php if(have_posts()) : while(have_posts()) : the_post() ; ?>
-			<?php get_template_part('partials/content'); ?>
-		<?php endwhile; else : ?>
-			<?php get_template_part('partials/content', 'none'); ?>
-		<?php endif; ?>
+		<?php 
+		if (have_posts()) {
+			while (have_posts()) {
+				the_post();
+				get_template_part('partials/content');
+			}
+			?>
+			<div class="pagination">
+				<?php echo paginate_links(); ?>
+			</div>
+			<?php
+		} else {
+			get_template_part('partials/content', 'none');
+		}
+		?>
 		
     </div>
 
