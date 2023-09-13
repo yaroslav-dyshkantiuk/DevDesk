@@ -6,7 +6,7 @@
 		<?php get_template_part('partials/content', 'none'); ?>
 	<?php endif; ?>
 </div>
-
+<p>index.php</p>
 <?php
 // get_sidebar();
 get_footer();

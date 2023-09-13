@@ -27,7 +27,7 @@ get_header();
     </div>
 
 	</div>
-
+<p>archive.php</p>
 <?php
 // get_sidebar();
 get_footer();
