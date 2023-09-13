@@ -8,6 +8,7 @@
  */
 
 require get_template_directory() . '/inc/widget-about.php';
+require get_template_directory() . '/inc/metaboxes.php';
 
 
 function devdesk_paginate($query){
