@@ -7,9 +7,11 @@ get_header();
 
 <div class="cars">
 <?php 
+    $paged = get_query_var('page') ? get_query_var('page') : 1;
     $args = array(
         'post_type' => 'car',
-        'posts_per_page' => -1,
+        'paged' => $paged,
+        'posts_per_page' => 2,
 
     );
     $cars = new WP_Query($args);
@@ -19,6 +21,7 @@ get_header();
             $cars->the_post();
             get_template_part('partials/content');
         } 
+        devdesk_paginate($cars);
     } else {
         get_template_part('partials/content', 'none');
     }

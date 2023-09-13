@@ -21,14 +21,20 @@ get_header();
 		</header>
 
 		<?php 
-		if (have_posts()) {
-			while (have_posts()) {
-				the_post();
+		$paged = get_query_var('paged') ? get_query_var('paged') : 1;
+		$cars = new WP_Query(array(
+			'post_type' => 'car',
+			'posts_per_page' => 1,
+			'paged' => $paged,
+		));
+		if ($cars->have_posts()) {
+			while ($cars->have_posts()) {
+				$cars->the_post();
 				get_template_part('partials/content');
 			}
 			?>
 			<div class="pagination">
-				<?php echo paginate_links(); ?>
+				<?php devdesk_paginate($cars);?> 
 			</div>
 			<?php
 		} else {

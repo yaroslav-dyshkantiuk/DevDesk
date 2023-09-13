@@ -9,6 +9,26 @@
 
 require get_template_directory() . '/inc/widget-about.php';
 
+
+function devdesk_paginate($query){
+	$big = 999999999; // need an unlikely integer
+
+	$paged = '';
+	if(is_singular()){
+		$paged = get_query_var('page');
+	} else {
+		$paged = get_query_var('paged');
+	}
+
+	echo paginate_links( array(
+		'base' => str_replace( $big, '%#%', esc_url( get_pagenum_link( $big ) ) ),
+		'format' => '?paged=%#%',
+		'current' => max( 1, $paged ),
+		'total' => $query->max_num_pages,
+		'prev_next' => false,
+	) );
+}
+
 function devdesk_widgets_init() {
 	register_sidebar(
 		array(
