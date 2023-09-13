@@ -30,7 +30,7 @@ get_header();
 		if ($cars->have_posts()) {
 			while ($cars->have_posts()) {
 				$cars->the_post();
-				get_template_part('partials/content');
+				get_template_part('partials/content', 'car');
 			}
 			?>
 			<div class="pagination">

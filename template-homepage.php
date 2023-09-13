@@ -43,7 +43,7 @@ get_header();
     if ($blogpost->have_posts()) {
         while ($blogpost->have_posts()) {
             $blogpost->the_post();
-            get_template_part('partials/content');
+            get_template_part('partials/content', 'car');
         } 
     } else {
         get_template_part('partials/content', 'none');

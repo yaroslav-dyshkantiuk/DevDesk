@@ -89,6 +89,14 @@ function devdesk_theme_setup() {
 	);
 
 	add_theme_support( 'post-thumbnails' );
+	add_image_size('car-cover', 240, 190, array('left', 'top'));
+
+	update_option('thumbnail_size_w', 190);
+	update_option('thumbnail_size_h', 190);
+	update_option('thumbnail_crop', 1);
+
+	//reserved size
+	//thumb, thumbnail, medium, large, post-thumbnail
 
 	add_theme_support('post-formats', 
 		array(
