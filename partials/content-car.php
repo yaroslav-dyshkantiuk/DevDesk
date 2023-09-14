@@ -12,5 +12,10 @@
     ?>
     <h1><?php the_title(); ?></h1>
     <div><?php the_content(); ?></div>
+    <div>
+        <?php
+        echo get_post_meta(get_the_ID(),'custom_price', true);
+        ?>
+    </div>
     <a href="<?php the_permalink() ; ?>">Read More</a>
 </article>
