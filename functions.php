@@ -109,13 +109,53 @@ add_action( 'widgets_init', 'devdesk_widgets_init' );
 
  function devdesk_enqueue_scripts() {
 	wp_enqueue_style('devdesk-general', get_template_directory_uri().'/assets/css/general.css', array(), '1.0', 'all');
-	wp_enqueue_script('devdesk-script', get_template_directory_uri().'/assets/js/script.js', array(), '1.0', true);
+	wp_enqueue_script('devdesk-script', get_template_directory_uri().'/assets/js/script.js', array('jquery'), '1.0', true);
+	wp_enqueue_script('devdesk-ajax', get_template_directory_uri().'/assets/js/ajax.js', array('jquery'), '1.0', true);
+	wp_localize_script(
+		'devdesk-ajax', 
+		'devdesk_ajax_script', 
+		array(
+			'ajaxurl' => admin_url('admin-ajax.php'),
+			'nonce' => wp_create_nonce('ajax-nonce'),
+			'string_box' => esc_html__('Hello', 'devdesk'),
+			'string_new' => esc_html__('Hello World', 'devdesk'),
+		)
+	);
  
 	if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) {
 		wp_enqueue_script( 'comment-reply' );
 	}
 }
- add_action('wp_enqueue_scripts', 'devdesk_enqueue_scripts');
+add_action('wp_enqueue_scripts', 'devdesk_enqueue_scripts');
+
+function devdesk_ajax_example(){
+	if(!wp_verify_nonce($_REQUEST['nonce'], 'ajax-nonce')){
+		die;
+	}
+
+	if(isset($_REQUEST['string_one'])){
+		echo $_REQUEST['string_one'];
+	}
+	echo "<br>";
+	if(isset($_REQUEST['string_two'])){
+		echo $_REQUEST['string_two'];
+	}
+
+	$cars = new WP_Query(array('post_type' => 'car', 'posts_per_page' => -1));
+
+	if ($cars->have_posts()) {
+        while ($cars->have_posts()) {
+            $cars->the_post();
+            get_template_part('partials/content', 'car');
+        } 
+    }
+
+    wp_reset_postdata();
+
+	die;
+}
+add_action('wp_ajax_devdesk_ajax_example', 'devdesk_ajax_example');
+add_action('wp_ajax_nopriv_devdesk_ajax_example', 'devdesk_ajax_example');
 
 function devdesk_theme_setup() {
 	register_nav_menus(array(
