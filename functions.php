@@ -10,6 +10,7 @@
 require get_template_directory() . '/inc/widget-about.php';
 require get_template_directory() . '/inc/metaboxes.php';
 require get_template_directory() . '/inc/acf.php';
+require get_template_directory() . '/inc/redux-options.php';
 require_once get_template_directory() . '/inc/class-tgm-plugin-activation.php';
 
 add_action( 'tgmpa_register', 'devdesk_register_required_plugins' );
