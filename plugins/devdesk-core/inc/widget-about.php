@@ -67,3 +67,8 @@ class Devdesk_About_Widget extends WP_Widget {
         return $instance;
     }
 }
+
+function devdesk_register_about_widget() {
+	register_widget( 'devdesk_about_widget' );
+}
+add_action( 'widgets_init', 'devdesk_register_about_widget' );
