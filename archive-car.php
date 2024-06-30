@@ -10,46 +10,38 @@
 get_header();
 ?>
 
-	<div>
 
-        Template for Custom Post Type Car
-		<header class="page-header">
-				<?php
-				the_archive_title( '<h1 class="page-title">', '</h1>' );
-				the_archive_description( '<div class="archive-description">', '</div>' );
-				?>
-		</header>
-
-		<?php 
-		$paged = get_query_var('paged') ? get_query_var('paged') : 1;
-		$cars = new WP_Query(array(
-			'post_type' => 'car',
-			'posts_per_page' => 1,
-			'paged' => $paged,
-		));
-		if ($cars->have_posts()) {
-			while ($cars->have_posts()) {
-				$cars->the_post();
-				get_template_part('partials/content', 'car');
-			}
-			?>
-			<div class="pagination">
-				<?php devdesk_paginate($cars);?> 
-			</div>
+<div class="container-fluid py-5">
+	<div class="container pt-5 pb-3">
+		<h1 class="display-4 text-uppercase text-center mb-5">Find Your Car</h1>
+		<div class="row">
 			<?php
-		} else {
-			get_template_part('partials/content', 'none');
-		}
-		?>
-		
-    </div>
+			$paged = (get_query_var('paged')) ? get_query_var('paged') : 1;
+			$cars = new WP_Query(array('post_type'=>'car','posts_per_page'=>3,'paged' => $paged));
+			
+			if($cars->have_posts()) : while($cars->have_posts()) : $cars->the_post(); ?>
+			
 
+				<?php get_template_part('partials/content', 'car'); ?> 
+
+			<?php endwhile; ?>
+				<div class="pagination">
+					<?php devdesk_paginate($cars); ?>
+				</div>
+			<?php
+			else : ?>
+
+				<?php get_template_part('partials/content', 'none'); ?> 
+
+			<?php endif;
+			wp_reset_postdata();
+			?>
+		</div>
 	</div>
+</div>
+<!-- Rent A Car End -->
+
+
 
 <?php
-if(is_active_sidebar('car-sidebar')) {
-echo '<aside id="secondary" class="widget-area">';
-get_sidebar('cars');
-echo '</aside>';
-}
 get_footer();

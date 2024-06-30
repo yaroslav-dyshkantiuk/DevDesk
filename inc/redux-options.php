@@ -18,11 +18,19 @@ $opt_name = 'devdesk_options';  // YOU MUST CHANGE THIS.  DO NOT USE 'redux_demo
 // Uncomment to disable demo mode.
 /* Redux::disable_demo(); */  // phpcs:ignore Squiz.PHP.CommentedOutCode
 
-$dir = __DIR__ . DIRECTORY_SEPARATOR;
+$dir = dirname( __FILE__ ) . '/';
 
 /*
  * --> Used within different fields. Simply examples. Search for ACTUAL DECLARATION for field examples
  */
+
+$sample_html = '';
+if ( file_exists( $dir . '/info-html.html' ) ) {
+	$fs = Redux_Filesystem::get_instance();
+	if ( method_exists( $fs, 'get_contents' ) ) {
+		$sample_html = $fs->execute( 'get_contents', $dir . '/info-html.html' );
+	}
+}
 
 // Background Patterns Reader.
 $sample_patterns_path = Redux_Core::$dir . '../sample/patterns/';
@@ -33,6 +41,7 @@ if ( is_dir( $sample_patterns_path ) ) {
 	$sample_patterns_dir = opendir( $sample_patterns_path );
 
 	if ( $sample_patterns_dir ) {
+		$sample_patterns = array();
 
 		// phpcs:ignore WordPress.CodeAnalysis.AssignmentInCondition
 		while ( false !== ( $sample_patterns_file = readdir( $sample_patterns_dir ) ) ) {
@@ -48,7 +57,7 @@ if ( is_dir( $sample_patterns_path ) ) {
 	}
 }
 
-// Used to except HTML tags in description arguments where esc_html would remove.
+// Used to execept HTML tags in description arguments where esc_html would remove.
 $kses_exceptions = array(
 	'a'      => array(
 		'href' => array(),
@@ -80,18 +89,21 @@ $args = array(
 	'display_version'           => $theme->get( 'Version' ),
 
 	// Specify if the admin menu should appear or not. Options: menu or submenu (Under appearance only).
-	'menu_type'                 => 'menu',
+	'menu_type'                 => 'submenu',
 
 	// Show the sections below the admin menu item or not.
 	'allow_sub_menu'            => false,
 
 	// The text to appear in the admin menu.
-	'menu_title'                => esc_html__( 'Sample Options', 'your-textdomain-here' ),
+	'menu_title'                => esc_html__( 'Theme Options', 'devdesk' ),
 
 	// The text to appear on the page title.
-	'page_title'                => esc_html__( 'Sample Options', 'your-textdomain-here' ),
+	'page_title'                => esc_html__( 'Theme Options', 'devdesk' ),
 
-	// Disable to create your own Google fonts loader.
+	// Enabled the Webfonts typography module to use asynchronous fonts.
+	'async_typography'          => false,
+
+	// Disable to create your own google fonts loader.
 	'disable_google_fonts_link' => false,
 
 	// Show the panel pages on the admin bar.
@@ -104,22 +116,22 @@ $args = array(
 	'admin_bar_priority'        => 50,
 
 	// Sets a different name for your global variable other than the opt_name.
-	'global_variable'           => $opt_name,
+	'global_variable'           => '',
 
-	// Show the time the page took to load, etc. (forced on while on localhost or when WP_DEBUG is enabled).
+	// Show the time the page took to load, etc (forced on while on localhost or when WP_DEBUG is enabled).
 	'dev_mode'                  => true,
 
 	// Enable basic customizer support.
 	'customizer'                => true,
 
-	// Allow the panel to open expanded.
+	// Allow the panel to opened expanded.
 	'open_expanded'             => false,
 
 	// Disable the save warning when a user changes a field.
 	'disable_save_warn'         => false,
 
 	// Order where the menu appears in the admin area. If there is any conflict, something will not show. Warning.
-	'page_priority'             => 90,
+	'page_priority'             => null,
 
 	// For a full list of options, visit: http://codex.wordpress.org/Function_Reference/add_submenu_page#Parameters.
 	'page_parent'               => 'themes.php',
@@ -151,7 +163,7 @@ $args = array(
 	// Shows the Import/Export panel when not used as a field.
 	'show_import_export'        => true,
 
-	// The time transients will expire when the 'database' arg is set.
+	// The time transinets will expire when the 'database' arg is set.
 	'transient_time'            => 60 * MINUTE_IN_SECONDS,
 
 	// Global shut-off for dynamic CSS output by the framework. Will also disable google fonts output.
@@ -170,13 +182,6 @@ $args = array(
 
 	// Set the theme of the option panel.  Use 'wp' to use a more modern style, default is classic.
 	'admin_theme'               => 'wp',
-
-	// Enable or disable flyout menus when hovering over a menu with submenus.
-	'flyout_submenus'           => true,
-
-	// Mode to display fonts (auto|block|swap|fallback|optional)
-	// See: https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display.
-	'font_display'              => 'swap',
 
 	// HINTS.
 	'hints'                     => array(
@@ -209,36 +214,15 @@ $args = array(
 	),
 
 	// FUTURE -> Not in use yet, but reserved or partially implemented. Use at your own risk.
-	// Possible: options, theme_mods, theme_mods_expanded, transient. Not fully functional, warning!
+	// possible: options, theme_mods, theme_mods_expanded, transient. Not fully functional, warning!
 	'database'                  => '',
 	'network_admin'             => true,
-	'search'                    => true,
 );
 
 
-// ADMIN BAR LINKS -> Setup custom links in the admin bar menu as external items.
-// PLEASE CHANGE THESE SETTINGS IN YOUR THEME BEFORE RELEASING YOUR PRODUCT!!
-// If these are left unchanged, they will not display in your panel!
-$args['admin_bar_links'][] = array(
-	'id'    => 'redux-docs',
-	'href'  => '//devs.redux.io/',
-	'title' => __( 'Documentation', 'your-textdomain-here' ),
-);
-
-$args['admin_bar_links'][] = array(
-	'id'    => 'redux-support',
-	'href'  => '//github.com/ReduxFramework/redux-framework/issues',
-	'title' => __( 'Support', 'your-textdomain-here' ),
-);
-
-$args['admin_bar_links'][] = array(
-	'id'    => 'redux-extensions',
-	'href'  => 'redux.io/extensions',
-	'title' => __( 'Extensions', 'your-textdomain-here' ),
-);
 
 // SOCIAL ICONS -> Setup custom links in the footer for quick links in your panel footer icons.
-// PLEASE CHANGE THESE SETTINGS IN YOUR THEME BEFORE RELEASING YOUR PRODUCT!!
+// PLEASE CHANGE THEME BEFORE RELEASEING YOUR PRODUCT!!
 // If these are left unchanged, they will not display in your panel!
 $args['share_icons'][] = array(
 	'url'   => '//github.com/ReduxFramework/ReduxFramework',
@@ -261,22 +245,6 @@ $args['share_icons'][] = array(
 	'icon'  => 'el el-linkedin',
 );
 
-// Panel Intro text -> before the form.
-if ( ! isset( $args['global_variable'] ) || false !== $args['global_variable'] ) {
-	if ( ! empty( $args['global_variable'] ) ) {
-		$v = $args['global_variable'];
-	} else {
-		$v = str_replace( '-', '_', $args['opt_name'] );
-	}
-
-	// translators:  Panel opt_name.
-	$args['intro_text'] = '<p>' . sprintf( esc_html__( 'Did you know that Redux sets a global variable for you? To access any of your saved options from within your code you can use your global variable: $%1$s', 'your-textdomain-here' ), '<strong>' . $v . '</strong>' ) . '<p>';
-} else {
-	$args['intro_text'] = '<p>' . esc_html__( 'This text is displayed above the options panel. It isn\'t required, but more info is always better! The intro_text field accepts all HTML.', 'your-textdomain-here' ) . '</p>';
-}
-
-// Add content after the form.
-$args['footer_text'] = '<p>' . esc_html__( 'This text is displayed below the options panel. It isn\'t required, but more info is always better! The footer_text field accepts all HTML.', 'your-textdomain-here' ) . '</p>';
 
 Redux::set_args( $opt_name, $args );
 
@@ -297,6 +265,11 @@ $help_tabs = array(
 		'id'      => 'redux-help-tab-2',
 		'title'   => esc_html__( 'Theme Information 2', 'your-textdomain-here' ),
 		'content' => '<p>' . esc_html__( 'This is the tab content, HTML is allowed.', 'your-textdomain-here' ) . '</p>',
+	),
+	array(
+		'id'      => 'redux-help-tab-3',
+		'title'   => esc_html__( '3 Theme Information 2', 'your-textdomain-here' ),
+		'content' => '<p>' . esc_html__( '3 This is the tab content, HTML is allowed.', 'your-textdomain-here' ) . '</p>',
 	),
 );
 Redux::set_help_tab( $opt_name, $help_tabs );
@@ -325,6 +298,159 @@ Redux::set_section(
 		'icon'             => 'el el-road',
 	)
 );
+Redux::setSection( $opt_name, array(
+	'title'            => esc_html__( 'Header Settings', 'redux-framework-demo' ),
+	'id'               => 'site_settings_header',
+	'subsection'       => true,
+	'customizer_width' => '450px',
+	'desc'             => __( 'Settings for Header', 'redux-framework-demo' ),
+	'fields'           => array(
+		
+		array(
+			'id'       => 'phone',
+			'type'     => 'text',
+			'title'    => __( 'Phone Number', 'redux-framework-demo' ),
+			'subtitle' => __( 'Insert phone', 'redux-framework-demo' ),
+			'desc'     => __( 'Phone', 'redux-framework-demo' ),
+			'default'  => '',
+		),
+		array(
+			'id'       => 'email',
+			'type'     => 'text',
+			'title'    => __( 'Site Email', 'redux-framework-demo' ),
+			'subtitle' => __( 'Insert Email', 'redux-framework-demo' ),
+			'desc'     => __( 'Email', 'redux-framework-demo' ),
+			'default'  => '',
+		),
+		array(
+			'id'       => 'heading_image',
+			'type'     => 'media',
+			'title'    => __( 'Heading image', 'redux-framework-demo' ),
+		),
+	
+	)
+) );
+
+Redux::setSection( $opt_name, array(
+	'title'            => esc_html__( 'Social Settings', 'redux-framework-demo' ),
+	'id'               => 'site_settings_social',
+	'subsection'       => true,
+	'customizer_width' => '450px',
+	'desc'             => __( 'Social links', 'redux-framework-demo' ),
+	'fields'           => array(
+		
+		array(
+			'id'       => 'fb',
+			'type'     => 'text',
+			'title'    => __( 'FB Link', 'redux-framework-demo' ),
+			'subtitle' => __( 'Insert profile link', 'redux-framework-demo' ),
+			'desc'     => __( 'Social link', 'redux-framework-demo' ),
+		),
+		array(
+			'id'       => 'twi',
+			'type'     => 'text',
+			'title'    => __( 'Twitter Link', 'redux-framework-demo' ),
+			'subtitle' => __( 'Insert profile link', 'redux-framework-demo' ),
+			'desc'     => __( 'Social link', 'redux-framework-demo' ),
+		),
+		array(
+			'id'       => 'in',
+			'type'     => 'text',
+			'title'    => __( 'LinkedIn Link', 'redux-framework-demo' ),
+			'subtitle' => __( 'Insert profile link', 'redux-framework-demo' ),
+			'desc'     => __( 'Social link', 'redux-framework-demo' ),
+		),
+		array(
+			'id'       => 'ins',
+			'type'     => 'text',
+			'title'    => __( 'Instagram Link', 'redux-framework-demo' ),
+			'subtitle' => __( 'Insert profile link', 'redux-framework-demo' ),
+			'desc'     => __( 'Social link', 'redux-framework-demo' ),
+		),
+		array(
+			'id'       => 'yout',
+			'type'     => 'text',
+			'title'    => __( 'YouTube Link', 'redux-framework-demo' ),
+			'subtitle' => __( 'Insert profile link', 'redux-framework-demo' ),
+			'desc'     => __( 'Social link', 'redux-framework-demo' ),
+		),
+	)
+) );
+
+Redux::setSection( $opt_name, array(
+	'title'            => esc_html__( 'Footer Settings', 'redux-framework-demo' ),
+	'id'               => 'site_settings_footer',
+	'subsection'       => true,
+	'customizer_width' => '450px',
+	'desc'             => __( 'Settings for Footer', 'redux-framework-demo' ),
+	'fields'           => array(
+		
+		array(
+			'id'       => 'title_one',
+			'type'     => 'text',
+			'title'    => __( 'GET IN TOUCH Title', 'redux-framework-demo' ),
+			'subtitle' => __( 'Insert the title', 'redux-framework-demo' ),
+			'desc'     => __( 'GET IN TOUCH', 'redux-framework-demo' ),
+		),
+		array(
+			'id'       => 'title_two',
+			'type'     => 'text',
+			'title'    => __( 'USEFULL LINKS Title', 'redux-framework-demo' ),
+			'subtitle' => __( 'Insert the title', 'redux-framework-demo' ),
+			'desc'     => __( 'USEFULL LINKS', 'redux-framework-demo' ),
+		),
+		array(
+			'id'       => 'title_three',
+			'type'     => 'text',
+			'title'    => __( 'CAR GALLERY Title', 'redux-framework-demo' ),
+			'subtitle' => __( 'Insert the title', 'redux-framework-demo' ),
+			'desc'     => __( 'CAR GALLERY', 'redux-framework-demo' ),
+		),
+		array(
+			'id'       => 'title_four',
+			'type'     => 'text',
+			'title'    => __( 'ABOUT Title', 'redux-framework-demo' ),
+			'subtitle' => __( 'Insert the title', 'redux-framework-demo' ),
+			'desc'     => __( 'ABOUT', 'redux-framework-demo' ),
+		),
+		array(
+			'id'       => 'address',
+			'type'     => 'text',
+			'title'    => __( 'Address', 'redux-framework-demo' ),
+			'subtitle' => __( 'Insert the address', 'redux-framework-demo' ),
+			'desc'     => __( 'Address', 'redux-framework-demo' ),
+		),
+		array(
+			'id'       => 'phonefooter',
+			'type'     => 'text',
+			'title'    => __( 'Phone Number', 'redux-framework-demo' ),
+			'subtitle' => __( 'Insert phone', 'redux-framework-demo' ),
+			'desc'     => __( 'Phone', 'redux-framework-demo' ),
+			'default'  => '',
+		),
+		array(
+			'id'       => 'emailfooter',
+			'type'     => 'text',
+			'title'    => __( 'Site Email', 'redux-framework-demo' ),
+			'subtitle' => __( 'Insert Email', 'redux-framework-demo' ),
+			'desc'     => __( 'Email', 'redux-framework-demo' ),
+			'default'  => '',
+		),
+		array(
+			'id'       => 'about_footer',
+			'type'     => 'editor',
+			'title'    => __( 'About Section', 'redux-framework-demo' ),
+			'subtitle' => __( 'Insert some text', 'redux-framework-demo' ),
+		),
+		array(
+			'id'       => 'copyrights',
+			'type'     => 'editor',
+			'title'    => __( 'Copyrights', 'redux-framework-demo' ),
+			'subtitle' => __( 'Insert Copyrights', 'redux-framework-demo' ),
+		),
+	)
+) );
+/*
 
 Redux::set_section(
 	$opt_name,
@@ -374,7 +500,6 @@ require_once Redux_Core::$dir . '../sample/sections/color-selection/color-gradie
 require_once Redux_Core::$dir . '../sample/sections/color-selection/color-rgba.php';
 require_once Redux_Core::$dir . '../sample/sections/color-selection/link-color.php';
 require_once Redux_Core::$dir . '../sample/sections/color-selection/palette.php';
-require_once Redux_Core::$dir . '../sample/sections/color-selection/color-palette.php';
 
 // -> START Design Fields.
 Redux::set_section(
@@ -387,7 +512,6 @@ Redux::set_section(
 );
 
 require_once Redux_Core::$dir . '../sample/sections/design-fields/background.php';
-require_once Redux_Core::$dir . '../sample/sections/design-fields/box-shadow.php';
 require_once Redux_Core::$dir . '../sample/sections/design-fields/border.php';
 require_once Redux_Core::$dir . '../sample/sections/design-fields/dimensions.php';
 require_once Redux_Core::$dir . '../sample/sections/design-fields/spacing.php';
@@ -404,7 +528,6 @@ Redux::set_section(
 
 require_once Redux_Core::$dir . '../sample/sections/media-uploads/gallery.php';
 require_once Redux_Core::$dir . '../sample/sections/media-uploads/media.php';
-require_once Redux_Core::$dir . '../sample/sections/media-uploads/multi-media.php';
 require_once Redux_Core::$dir . '../sample/sections/media-uploads/slides.php';
 
 // -> START Presentation Fields.
@@ -483,7 +606,6 @@ Redux::set_section(
 );
 
 require_once Redux_Core::$dir . '../sample/sections/additional-types/date.php';
-require_once Redux_Core::$dir . '../sample/sections/additional-types/date-time-picker.php';
 require_once Redux_Core::$dir . '../sample/sections/additional-types/sorter.php';
 require_once Redux_Core::$dir . '../sample/sections/additional-types/raw.php';
 
@@ -520,43 +642,42 @@ Redux::set_section(
 require_once Redux_Core::$dir . '../sample/sections/disabling/disable-field.php';
 require_once Redux_Core::$dir . '../sample/sections/disabling/disable-section.php';
 
-// -> START Extensions.
-Redux::set_section(
-	$opt_name,
-	array(
-		'title' => esc_html__( 'Redux Extensions', 'your-textdomain-here' ),
-		'id'    => 'redux-extensions',
-		'icon'  => 'el el-redux',
-		'class' => 'pro_highlight',
-		'desc'  => esc_html__( 'For full documentation on this field, visit: ', 'your-textdomain-here' ) . '<a href="https://devs.redux.io/core-extensions/" target="_blank">https://devs.redux.io/core-extensions/</a>',
-	)
-);
-
-require_once Redux_Core::$dir . '../sample/sections/extensions/accordion.php';
-require_once Redux_Core::$dir . '../sample/sections/extensions/custom-fonts.php';
-require_once Redux_Core::$dir . '../sample/sections/extensions/google-maps.php';
-require_once Redux_Core::$dir . '../sample/sections/extensions/icon-select.php';
-require_once Redux_Core::$dir . '../sample/sections/extensions/js-button.php';
-require_once Redux_Core::$dir . '../sample/sections/extensions/repeater.php';
-require_once Redux_Core::$dir . '../sample/sections/extensions/search.php';
-require_once Redux_Core::$dir . '../sample/sections/extensions/shortcodes.php';
-require_once Redux_Core::$dir . '../sample/sections/extensions/social-profiles.php';
-require_once Redux_Core::$dir . '../sample/sections/extensions/widget-areas.php';
-require_once Redux_Core::$dir . '../sample/sections/extensions/taxonomy.php';
-require_once Redux_Core::$dir . '../sample/sections/extensions/users.php';
-
+// -> START Pro Fields.
 if ( class_exists( 'Redux_Pro' ) ) {
-	require_once Redux_Core::$dir . '../sample/sections/extensions/color-scheme.php';
+	Redux::set_section(
+		$opt_name,
+		array(
+			'title' => esc_html__( 'Redux Pro Fields', 'your-textdomain-here' ),
+			'id'    => 'redux-pro-fields',
+			'icon'  => 'el el-redux',
+			'class' => 'pro_highlight',
+			'desc'  => esc_html__( 'For full documentation on this field, visit: ', 'your-textdomain-here' ) . '<a href="https://devs.redux.io/premium/" target="_blank">https://devs.redux.io/premium/</a>',
+		)
+	);
+
+	require_once Redux_Core::$dir . '../sample/sections/pro-fields/accordion.php';
+	require_once Redux_Core::$dir . '../sample/sections/pro-fields/box-shadow.php';
+	require_once Redux_Core::$dir . '../sample/sections/pro-fields/color-gradient.php';
+	require_once Redux_Core::$dir . '../sample/sections/pro-fields/color-palette.php';
+	require_once Redux_Core::$dir . '../sample/sections/pro-fields/color-scheme.php';
+	require_once Redux_Core::$dir . '../sample/sections/pro-fields/custom-fonts.php';
+	require_once Redux_Core::$dir . '../sample/sections/pro-fields/date-time-picker.php';
+	require_once Redux_Core::$dir . '../sample/sections/pro-fields/google-maps.php';
+	require_once Redux_Core::$dir . '../sample/sections/pro-fields/icon-select.php';
+	require_once Redux_Core::$dir . '../sample/sections/pro-fields/js-button.php';
+	require_once Redux_Core::$dir . '../sample/sections/pro-fields/media.php';
+	require_once Redux_Core::$dir . '../sample/sections/pro-fields/metaboxes.php';
+	require_once Redux_Core::$dir . '../sample/sections/pro-fields/multi-media.php';
+	require_once Redux_Core::$dir . '../sample/sections/pro-fields/repeater.php';
+	require_once Redux_Core::$dir . '../sample/sections/pro-fields/search.php';
+	require_once Redux_Core::$dir . '../sample/sections/pro-fields/shortcodes.php';
+	require_once Redux_Core::$dir . '../sample/sections/pro-fields/social-profiles.php';
+	require_once Redux_Core::$dir . '../sample/sections/pro-fields/taxonomy.php';
+	require_once Redux_Core::$dir . '../sample/sections/pro-fields/typography.php';
+	require_once Redux_Core::$dir . '../sample/sections/pro-fields/users.php';
+	require_once Redux_Core::$dir . '../sample/sections/pro-fields/widget-areas.php';
 }
 
-/**
- * Metaboxes
- */
-require_once Redux_Core::$dir . '../sample/metaboxes.php';
-
-/**
- * Raw README
- */
 if ( file_exists( $dir . '/../README.md' ) ) {
 	$section = array(
 		'icon'   => 'el el-list-alt',
@@ -566,7 +687,7 @@ if ( file_exists( $dir . '/../README.md' ) ) {
 				'id'           => 'opt-raw-documentation',
 				'type'         => 'raw',
 				'markdown'     => true,
-				'content_path' => __DIR__ . '/../README.md', // FULL PATH, not relative, please.
+				'content_path' => dirname( __FILE__ ) . '/../README.md', // FULL PATH, not relative please.
 			),
 		),
 	);
@@ -599,7 +720,7 @@ Redux::set_section(
 		),
 	)
 );
-
+*/
 /*
  * <--- END SECTIONS
  */
@@ -613,29 +734,29 @@ Redux::set_section(
  */
 
 // Function to test the compiler hook and demo CSS output.
-// Above 10 is a priority, but 2 is necessary to include the dynamically generated CSS to be sent to the function.
+// Above 10 is a priority, but 2 in necessary to include the dynamically generated CSS to be sent to the function.
 // add_filter('redux/options/' . $opt_name . '/compiler', 'compiler_action', 10, 3);
 //
 // Change the arguments after they've been declared, but before the panel is created.
 // add_filter('redux/options/' . $opt_name . '/args', 'change_arguments' );
 //
-// Change the default value of a field after it's been set, but before it's been used.
+// Change the default value of a field after it's been set, but before it's been useds.
 // add_filter('redux/options/' . $opt_name . '/defaults', 'change_defaults' );
 //
-// Dynamically add a section.
-// It can be also used to modify sections/fields.
+// Dynamically add a section. Can be also used to modify sections/fields.
 // add_filter('redux/options/' . $opt_name . '/sections', 'dynamic_section');
 // .
 if ( ! function_exists( 'compiler_action' ) ) {
 	/**
+	 *
 	 * This is a test function that will let you see when the compiler hook occurs.
 	 * It only runs if a field's value has changed and compiler=>true is set.
 	 *
 	 * @param array  $options        Options values.
 	 * @param string $css            Compiler selector CSS values  compiler => array( CSS SELECTORS ).
-	 * @param array  $changed_values Any values changed since last save.
+	 * @param array  $changed_values Values changed since last save.
 	 */
-	function compiler_action( array $options, string $css, array $changed_values ) {
+	function compiler_action( $options, $css, $changed_values ) {
 		echo '<h1>The compiler hook has run!</h1>';
 		echo '<pre>';
 		// phpcs:ignore WordPress.PHP.DevelopmentFunctions
@@ -643,7 +764,7 @@ if ( ! function_exists( 'compiler_action' ) ) {
 		// echo '<br/>';
 		// print_r($options); //Option values.
 		// echo '<br/>';
-		// print_r($css); // Compiler selector CSS values compiler => array( CSS SELECTORS ).
+		// print_r($css); // Compiler selector CSS values  compiler => array( CSS SELECTORS ).
 		echo '</pre>';
 	}
 }
@@ -656,17 +777,17 @@ if ( ! function_exists( 'redux_validate_callback_function' ) ) {
 	 * @param mixed $value          New value.
 	 * @param mixed $existing_value Existing value.
 	 *
-	 * @return array
+	 * @return mixed
 	 */
-	function redux_validate_callback_function( array $field, $value, $existing_value ): array {
+	function redux_validate_callback_function( $field, $value, $existing_value ) {
 		$error   = false;
 		$warning = false;
 
 		// Do your validation.
-		if ( 1 === (int) $value ) {
+		if ( 1 === $value ) {
 			$error = true;
 			$value = $existing_value;
-		} elseif ( 2 === (int) $value ) {
+		} elseif ( 2 === $value ) {
 			$warning = true;
 			$value   = $existing_value;
 		}
@@ -690,17 +811,16 @@ if ( ! function_exists( 'redux_validate_callback_function' ) ) {
 
 if ( ! function_exists( 'dynamic_section' ) ) {
 	/**
-	 * Custom function for filtering the section array.
-	 * Good for child themes to override or add to the sections.
+	 * Custom function for filtering the sections array. Good for child themes to override or add to the sections.
 	 * Simply include this function in the child themes functions.php file.
-	 * NOTE: the defined constants for URLs and directories will NOT be available at this point in a child theme,
-	 * so you must use get_template_directory_uri() if you want to use any of the built-in icons.
+	 * NOTE: the defined constants for URLs, and directories will NOT be available at this point in a child theme,
+	 * so you must use get_template_directory_uri() if you want to use any of the built in icons.
 	 *
 	 * @param array $sections Section array.
 	 *
 	 * @return array
 	 */
-	function dynamic_section( array $sections ): array {
+	function dynamic_section( $sections ) {
 		$sections[] = array(
 			'title'  => esc_html__( 'Section via hook', 'your-textdomain-here' ),
 			'desc'   => '<p class="description">' . esc_html__( 'This is a section created by adding a filter to the sections array. Can be used by child themes to add/remove sections from the options.', 'your-textdomain-here' ) . '</p>',
@@ -717,14 +837,13 @@ if ( ! function_exists( 'dynamic_section' ) ) {
 if ( ! function_exists( 'change_arguments' ) ) {
 	/**
 	 * Filter hook for filtering the args.
-	 * Good for child themes to override or add to the args array.
-	 * It can also be used in other functions.
+	 * Good for child themes to override or add to the args array. Can also be used in other functions.
 	 *
 	 * @param array $args Global arguments array.
 	 *
 	 * @return array
 	 */
-	function change_arguments( array $args ): array {
+	function change_arguments( $args ) {
 		$args['dev_mode'] = true;
 
 		return $args;
@@ -739,7 +858,7 @@ if ( ! function_exists( 'change_defaults' ) ) {
 	 *
 	 * @return array
 	 */
-	function change_defaults( array $defaults ): array {
+	function change_defaults( $defaults ) {
 		$defaults['str_replace'] = esc_html__( 'Testing filter hook!', 'your-textdomain-here' );
 
 		return $defaults;
@@ -748,14 +867,15 @@ if ( ! function_exists( 'change_defaults' ) ) {
 
 if ( ! function_exists( 'redux_custom_sanitize' ) ) {
 	/**
-	 * Function to be used if the field sanitizes argument.
-	 * Return value MUST be formatted or cleaned text to display.
+	 * Function to be used if the field santize argument.
+	 *
+	 * Return value MUST be the formatted or cleaned text to display.
 	 *
 	 * @param string $value Value to evaluate or clean.  Required.
 	 *
 	 * @return string
 	 */
-	function redux_custom_sanitize( string $value ): string {
+	function redux_custom_sanitize( $value ) {
 		$return = '';
 
 		foreach ( explode( ' ', $value ) as $w ) {
@@ -766,7 +886,6 @@ if ( ! function_exists( 'redux_custom_sanitize' ) ) {
 					$return .= $v;
 				}
 			}
-
 			$return .= ' ';
 		}
 

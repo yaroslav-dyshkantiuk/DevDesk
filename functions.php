@@ -108,25 +108,43 @@ add_action( 'widgets_init', 'devdesk_widgets_init' );
 
 
  function devdesk_enqueue_scripts() {
-	wp_enqueue_style('devdesk-general', get_template_directory_uri().'/assets/css/general.css', array(), '1.0', 'all');
-	wp_enqueue_script('devdesk-script', get_template_directory_uri().'/assets/js/script.js', array('jquery'), '1.0', true);
-	wp_enqueue_script('devdesk-ajax', get_template_directory_uri().'/assets/js/ajax.js', array('jquery'), '1.0', true);
-	wp_localize_script(
-		'devdesk-ajax', 
-		'devdesk_ajax_script', 
-		array(
-			'ajaxurl' => admin_url('admin-ajax.php'),
-			'nonce' => wp_create_nonce('ajax-nonce'),
-			'string_box' => esc_html__('Hello', 'devdesk'),
-			'string_new' => esc_html__('Hello World', 'devdesk'),
-		)
-	);
+	wp_enqueue_style('devdesk-font-awesome','https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.0/css/all.min.css', array(), '1.0', 'all');
+	wp_enqueue_style('owl.carousel', get_template_directory_uri().'/assets/js/lib/owlcarousel/assets/owl.carousel.min.css', array(), '1.0', 'all');
+	wp_enqueue_style('tempusdominus-bootstrap-4', get_template_directory_uri().'/assets/js/lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css', array(), '1.0', 'all');
+	wp_enqueue_style('devdesk-bootstrap', get_template_directory_uri().'/assets/css/bootstrap.min.css', array(), '1.0', 'all');
+	wp_enqueue_style('devdesk-style', get_template_directory_uri().'/assets/css/style.css', array(), '1.0', 'all');
+
+
+	wp_enqueue_script('bootstrap.bundle', 'https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js', array('jquery'), '1.0', true);
+	wp_enqueue_script('easing', get_template_directory_uri().'/assets/js/lib/easing/easing.min.js', array('jquery'), '1.0', true);
+	wp_enqueue_script('waypoints', get_template_directory_uri().'/assets/js/lib/waypoints/waypoints.min.js', array('jquery'), '1.0', true);
+	wp_enqueue_script('owl.carousel', get_template_directory_uri().'/assets/js/lib/owlcarousel/owl.carousel.min.js', array('jquery'), '1.0', true);
+	wp_enqueue_script('moment', get_template_directory_uri().'/assets/js/lib/tempusdominus/js/moment.min.js', array('jquery'), '1.0', true);
+	wp_enqueue_script('moment-timezone', get_template_directory_uri().'/assets/js/lib/tempusdominus/js/moment-timezone.min.js', array('jquery'), '1.0', true);
+	wp_enqueue_script('tempusdominus-bootstrap-4', get_template_directory_uri().'/assets/js/lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js', array('jquery'), '1.0', true);
+	wp_enqueue_script('devdesk-main', get_template_directory_uri().'/assets/js/main.js', array('jquery'), '1.0', true);
+
+	wp_enqueue_style('devdesk-fonts', dd_fonts_url(), array(), '1.0');
+	
  
 	if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) {
 		wp_enqueue_script( 'comment-reply' );
 	}
 }
 add_action('wp_enqueue_scripts', 'devdesk_enqueue_scripts');
+
+function dd_fonts_url(){
+	$fonts_url = '';
+	$families = array();
+	$families[] = 'Oswald:wght@400;500;600;700';
+	$families[] = 'Rubik';
+
+	$query_args = array(
+		'family' => urlencode(implode('|', $families)),
+	);
+	$fonts_url = add_query_arg($query_args, 'https://fonts.googleapis.com/css');
+	return esc_url_raw($fonts_url);
+}
 
 function devdesk_ajax_example(){
 	if(!wp_verify_nonce($_REQUEST['nonce'], 'ajax-nonce')){
@@ -270,7 +288,7 @@ function devdesk_custom_comments($comment, $args, $depth){
 		
 		</div><?php 
         if ( $comment->comment_approved == '0' ) { ?>
-            <em class="comment-awaiting-moderation"><?php _e( 'Your comment is awaiting moderation.','geniuscourses' ); ?></em><br/><?php 
+            <em class="comment-awaiting-moderation"><?php _e( 'Your comment is awaiting moderation.','devdesk' ); ?></em><br/><?php 
         } ?>
         <div class="comment-meta commentmetadata">
             <a href="<?php echo htmlspecialchars( get_comment_link( $comment->comment_ID ) ); ?>"><?php
@@ -291,3 +309,20 @@ function devdesk_custom_comments($comment, $args, $depth){
         </div><?php 
     endif;
 }
+
+function dd_add_class_on_li($classes,$item, $args){
+	if(isset($args->add_li_class)){
+		$classes[] = $args->add_li_class;
+	}
+	return $classes;
+}
+add_filter('nav_menu_css_class','dd_add_class_on_li',1,3);
+
+function dd_posts_per_page($query){
+	if(!is_admin()){
+		if(is_post_type_archive('car')){
+			$query->set('posts_per_page', 3);
+		}
+	}
+}
+add_action('pre_get_posts','dd_posts_per_page');
